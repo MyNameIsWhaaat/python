@@ -20,6 +20,9 @@ class NeuralNetwork:
     #Функция нормализации значений на базе
     def normalized(self, x):
         return (x - np.mean(x, axis=0)) / np.std(x, axis=0)
+    
+    def minMaxNormalized(self, x):
+        return (x - np.min(x, axis=0))/(np.max(x, axis=0) - np.min(x, axis=0))
 
     #Функция активация и производная для функции активации на базе (релу)
     def relu(self,vector):
@@ -67,6 +70,16 @@ class NeuralNetwork:
         exits = self.softmax(vector_hid_out)
         
         return round(np.mean(np.argmax(exits, axis=1)==y), 4) * 100
+    
+    def predictOne(self, X):
+        vector_in_hid = self.minMaxNormalized(X) @ self.weights_input_hidden + self.bios_input_hidden
+        input_ex = self.relu(vector_in_hid)
+        
+        vector_hid_out = input_ex @ self.weights_hidden_output + self.bios_hidden_output
+        exit = self.softmax(vector_hid_out)
+
+        return exit
+
     
     def graphErr(self):
         plt.plot(range(self.epochs), self.errors)

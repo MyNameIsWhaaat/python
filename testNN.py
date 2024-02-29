@@ -17,8 +17,11 @@ X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_
 
 y_cat = to_categorical(y_train)
 
-nn = NeuralNetwork(X.shape[1], 10, len(set(y)), 0.001, 500)
-nn.learing(X_train, y_cat)
-nn.graphErr()
-print(nn.predict(X_train, y_train))
-print(nn.predict(X_test, y_test))
+#nn = NeuralNetwork(X.shape[1], 10, len(set(y)), 0.001, 500)
+#nn.learing(X_train, y_cat)
+#nn.graphErr()
+#print(nn.predict(X_train, y_train))
+#print(nn.predict(X_test, y_test))
+
+print(X_test)
+print(to_categorical(y_test))

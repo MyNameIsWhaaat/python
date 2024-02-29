@@ -1,12 +1,12 @@
 import numpy as np
 import matplotlib.pyplot as plt
-from sklearn.datasets import load_iris
+from sklearn.datasets import load_wine
 from sklearn.model_selection import train_test_split
 
 # Загрузка датасета Iris
-iris = load_iris()
-X = iris.data #Массив значений
-y = iris.target #Массив правильных ответов
+wine = load_wine()
+X = wine.data #Массив значений
+y = wine.target #Массив правильных ответов
 
 # Преобразование меток классов в бинарный формат
 # Было [0,...,1,..,2...], где каждая цифра обозначает вид ириса
@@ -37,17 +37,17 @@ X_norm_test = normalized(X_test)
 y_cat = to_categorical(y_train)
 
 input_dim = X.shape[1] #Кол-во входных данных (4)
-hidden_dim = 10 #Кол-во нейронов в скрытом слое
+hidden_dim = 6 #Кол-во нейронов в скрытом слое
 out_dim = 3 #Кол-во выходных классов
 
 #Задаёт рандомные значения для весов и смещения первого входного слоя (Инициализация Ксавье)
 #Нужно для нормализации весов, все веса будут инициализироваться в диапазоне от 0 до 1
 stddev = np.sqrt(2.0 / (input_dim + out_dim))
-weights_in = np.random.normal(0, stddev, (input_dim, hidden_dim))
+weights_in = np.random.normal(0, np.sqrt(2.0 / (input_dim + out_dim)), (input_dim, hidden_dim))
 bios_in = np.random.rand(hidden_dim)
 
 #Задаёт рандомные значения для весов и смещения второго скрытого слоя (Инициализация Ксавье)
-weights_hid = np.random.normal(0, stddev, (hidden_dim, out_dim))
+weights_hid = np.random.normal(0, np.sqrt(2.0 / (input_dim + out_dim)), (hidden_dim, out_dim))
 bios_hid = np.random.rand(out_dim)
 
 def relu(vector): #функция активации (принимает вектор)
@@ -63,8 +63,8 @@ def softmax(vector): #превращает произвольный вектор
 
 
 learning_rate = 0.001 #скорость обучения
-epochs = 400 #циклы(эпохи)
-errors=[]# Массив ошибок для грфика
+epochs = 500 #циклы(эпохи)
+errors=[]# Массив ошибок для графика
 weights_in_changes =[]# Массив весов для графика
 
 for epoch in range(epochs):
@@ -131,14 +131,14 @@ def graphWeightsChange(weightArr):
     plt.ylabel('Weights')
     plt.title('Changes in Weights')
     plt.legend()
-    plt.show()
+    #plt.show()
 
 graphWeightsChange(weights_in_changes)
 
 # Прогон по тренировочным значениям в среднем 96-98% точности
-pred_train = predict(X_norm_train)
-accuracy_train = (np.mean(np.argmax(pred_train, axis=1)==y_train))
-accuracy_rd_per_train = round(accuracy_train, 4) * 100
+#pred_train = predict(X_norm_train)
+#accuracy_train = (np.mean(np.argmax(pred_train, axis=1)==y_train))
+accuracy_rd_per_train = round(np.mean(np.argmax(predict(X_norm_train), axis=1)==y_train), 4) * 100
 print("Точность модели на обучающем наборе данных: ", accuracy_rd_per_train, "%")
 
 # Прогон по тестовым значениям, которые нейросеть ещё не видела в среднем 93-96% точности
@@ -147,4 +147,5 @@ accuracy_test = (np.mean(np.argmax(pred_test, axis=1)==y_test))
 accuracy_rd_per_test = round(accuracy_test, 4) * 100
 print("Точность модели на тестовом наборе после обучения: ", accuracy_rd_per_test, "%")
 
-
+unique_classes = len(wine.data)
+print(unique_classes)
